@@ -1,0 +1,19 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+.env.*
+!.env.example
+
+# Local Codex configuration and installation artifacts.
+/.codex/
+/agents/
+/agent-team/
+/backups/
+/cache/
+/sessions/
+/auth.json
+/config.toml
+/AGENTS.md

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Team"
+  short_description: "Route bounded work to Luna and Astra specialists"
+  default_prompt: "Use $agent-team to coordinate this task with the appropriate worker, critic, or UI/UX designer."

@@ -1,0 +1,23 @@
+{
+  "name": "agent-team",
+  "version": "0.1.0+codex.20260923081420",
+  "description": "Codex coordination for a gpt-6-sol or gpt-6-astra primary with gpt-6-luna workers, an Astra critic, and an Astra UI/UX designer.",
+  "author": {
+    "name": "Codex Plugins Maintainers"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Team",
+    "shortDescription": "Coordinate Luna and Astra specialists in Codex.",
+    "longDescription": "A gpt-6-sol or gpt-6-astra primary routes bounded work to gpt-6-luna, design execution to Astra, and key tradeoffs needing Astra judgment to an independent critic; a gpt-6-astra primary may use the critic for an independent opinion without default duplicate analysis. The separate Luna-primary advisor is outside this plugin. Includes ownership-aware installation of named Codex agents.",
+    "developerName": "Codex Plugins Maintainers",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use $agent-team to coordinate this task with the appropriate specialists."
+    ]
+  }
+}
