@@ -16,11 +16,12 @@ if sys.version_info < (3, 11):
 import tomllib
 import uuid
 
-ROLES = ("luna_worker", "luna_monitor", "astra_critic", "uiux_designer")
+ROLES = ("worker", "luna_monitor", "astra_critic", "uiux_designer")
+RETIRED_ROLES = ("luna_worker",)
 PLUGIN_ROOT = Path(__file__).resolve().parents[1]
 STATE = "agent-team/state.json"
 PENDING = "agent-team/pending.json"
-TARGETS = {STATE, *(f"agents/{name}.toml" for name in ROLES)}
+TARGETS = {STATE, *(f"agents/{name}.toml" for name in (*ROLES, *RETIRED_ROLES))}
 
 
 class Conflict(Exception):
@@ -120,11 +121,12 @@ def load_state(root: Path) -> tuple[bytes | None, dict]:
     if (set(state) != {"schema", "version", "roles"} or state["schema"] != 1
             or not isinstance(state["version"], str)
             or not isinstance(state["roles"], dict)
-            or not state["roles"] or not set(state["roles"]) <= set(ROLES)):
+            or not state["roles"] or not set(state["roles"]) <= set((*ROLES, *RETIRED_ROLES))):
         raise Conflict("invalid ownership state")
     for name, record in state["roles"].items():
         if (not isinstance(record, dict) or set(record) != {"installed_sha256", "original"}
-                or not re.fullmatch(r"[0-9a-f]{64}", str(record["installed_sha256"]))):
+                or not (name in RETIRED_ROLES and record["installed_sha256"] is None
+                        or re.fullmatch(r"[0-9a-f]{64}", str(record["installed_sha256"])))):
             raise Conflict(f"invalid ownership record: {name}")
         original = record["original"]
         if original is not None:
@@ -263,14 +265,14 @@ def execute(action: str, root: Path, adopt: dict[str, str] | None = None, plugin
     before_state, state = load_state(root)
     version, sources = load_sources(plugin) if action != "uninstall" else (state["version"], {})
     changes, backups, records, report = {}, {}, {}, []
-    for name in ROLES:
+    for name in (*ROLES, *(name for name in RETIRED_ROLES if name in state["roles"])):
         rel = f"agents/{name}.toml"
         current = read(root / rel)
         record = state["roles"].get(name)
         if record:
             if name in adopt:
                 raise Conflict(f"managed role cannot be re-adopted: {name}")
-            if current is None or digest(current) != record["installed_sha256"]:
+            if (digest(current) if current is not None else None) != record["installed_sha256"]:
                 raise Conflict(f"managed role drift: {name}")
         if action == "uninstall":
             if not record:
@@ -280,10 +282,10 @@ def execute(action: str, root: Path, adopt: dict[str, str] | None = None, plugin
             changes[rel] = current, after
             report.append({"role": name, "operation": "restore" if original else "remove"})
             continue
-        after = sources[name]
+        after = sources.get(name)
         original = record["original"] if record else None
         if record:
-            operation = "unchanged" if current == after else "update"
+            operation = "unchanged" if current == after else "retire" if after is None else "update"
         elif current is None:
             if name in adopt:
                 raise Conflict(f"adoption target missing: {name}")
@@ -295,7 +297,7 @@ def execute(action: str, root: Path, adopt: dict[str, str] | None = None, plugin
             backup = f"backups/{uuid.uuid4().hex}-{name}.toml"
             backups[backup] = current
             original = {"path": backup, "sha256": digest(current)}
-        records[name] = {"installed_sha256": digest(after), "original": original}
+        records[name] = {"installed_sha256": digest(after) if after is not None else None, "original": original}
         changes[rel] = current, after
         report.append({"role": name, "operation": operation})
     if action == "uninstall":

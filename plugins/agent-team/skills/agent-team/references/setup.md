@@ -1,10 +1,10 @@
 # Install and maintain Agent Team
 
-This plugin is for local Codex clients with custom TOML agents. The role manager currently supports macOS/Linux, requires Python 3.11 or newer, and uses only the standard library. Choose a Python executable meeting that requirement for the commands below. The source roles are `luna_worker` (`gpt-6-luna` / `max`), `luna_monitor` (`gpt-6-luna` / `high`), `astra_critic` (`gpt-6-astra` / `high`), and `uiux_designer` (`gpt-6-astra` / `medium`). Their fixed model/effort settings are not changed by spawn arguments.
+This plugin is for local Codex clients with custom TOML agents. The role manager currently supports macOS/Linux, requires Python 3.11 or newer, and uses only the standard library. Choose a Python executable meeting that requirement for the commands below. The source roles are `worker` (`gpt-6.1-terra` / `high`), `luna_monitor` (`gpt-6-luna` / `high`), `astra_critic` (`gpt-6-astra` / `high`), and `uiux_designer` (`gpt-6-astra` / `medium`). Their fixed model/effort settings are not changed by spawn arguments.
 
 ## Install the plugin and roles
 
-Clone the private repository with an authorized GitHub account and register its local marketplace:
+Clone the repository with an authorized GitHub account and register its local marketplace:
 
 ```bash
 gh repo clone zed76r/codex-agent-team
@@ -23,7 +23,7 @@ python3 "$TEAM_PLUGIN_ROOT/scripts/manage_agents.py" install
 python3 "$TEAM_PLUGIN_ROOT/scripts/manage_agents.py" status
 ```
 
-`plan` is read-only. `install` deploys or updates only the four named roles under `$CODEX_HOME/agents/`, or `~/.codex/agents/` when `CODEX_HOME` is unset. `--codex-home /absolute/path` selects another Codex home, including an isolated test directory. The tool records ownership under that home's `agent-team/` directory. It does not edit `config.toml`, `AGENTS.md`, other agents, skills, credentials, or plugin registries. Existing three-role ownership state is accepted so `install` can add `luna_monitor` without adopting or replacing unrelated files.
+`plan` is read-only. `install` deploys or updates only the four named roles under `$CODEX_HOME/agents/`, or `~/.codex/agents/` when `CODEX_HOME` is unset. `--codex-home /absolute/path` selects another Codex home, including an isolated test directory. The tool records ownership under that home's `agent-team/` directory. It does not edit `config.toml`, `AGENTS.md`, other agents, skills, credentials, or plugin registries. Existing ownership state is accepted. On upgrade, `install` retires a managed `luna_worker` and installs `worker`; it preserves the old ownership record and original backup for uninstall, and refuses drift or an unmanaged `worker`. A custom `worker` takes precedence over the built-in worker role.
 
 Installation is an explicit local configuration action. A role missing during ordinary task execution does not authorize installing it. Preserve the user's current primary model, permission settings, and unrelated plugin configuration.
 
@@ -32,8 +32,8 @@ Installation is an explicit local configuration action. A role missing during or
 An unmanaged same-name role is a conflict by default. Review its difference from the corresponding source TOML before choosing to adopt it. Compute the SHA-256 of the reviewed local file, then pass the exact expected value:
 
 ```bash
-python3 "$TEAM_PLUGIN_ROOT/scripts/manage_agents.py" plan --adopt "luna_worker=<reviewed-sha256>"
-python3 "$TEAM_PLUGIN_ROOT/scripts/manage_agents.py" install --adopt "luna_worker=<reviewed-sha256>"
+python3 "$TEAM_PLUGIN_ROOT/scripts/manage_agents.py" plan --adopt "worker=<reviewed-sha256>"
+python3 "$TEAM_PLUGIN_ROOT/scripts/manage_agents.py" install --adopt "worker=<reviewed-sha256>"
 ```
 
 Replace the placeholder before running the command. Adoption is explicit and conditional on that exact content. The tool saves the original role so uninstall can restore it. Do not take over an unrelated role merely because its name matches.
@@ -56,11 +56,11 @@ Uninstall restores adopted originals and removes roles created by this installat
 
 ## Activate and verify
 
-Start a new Codex thread after role installation or update. Confirm all four named roles are exposed, then run small, safe assignments through each role and check the actual child results. TOML parsing, plugin validation, and matching version labels do not establish runtime discovery or model execution.
+Start a new Codex thread after role installation or update. Confirm all four named roles are exposed, then run small, safe assignments and verify the actual child role and effective model/effort in runtime metadata. `task_name`, TOML parsing, plugin validation, and matching version labels do not establish runtime discovery or model execution. If the review role is unavailable or unverified, the primary reviews directly; never downgrade independent review to the worker, monitor, or a generic role.
 
 For automatic routing under a `gpt-6-sol` or `gpt-6-astra` primary, a user or project `AGENTS.md` may contain a short `$agent-team` entrypoint. Keep authorization, production access, credentials, tunnels, and machine-specific constraints in their existing local guidance. Do not copy those settings into the shared plugin.
 
-When a `gpt-6-sol` primary needs Astra judgment on a key tradeoff, route it to `astra_critic`; when a `gpt-6-astra` primary only needs an independent opinion, use the critic. Do not trigger duplicate analysis by default.
+Explicitly select `astra_critic` for delegated independent code, plan, or architecture review and consequential tradeoffs; keep UI/UX review with `uiux_designer`. The primary may review directly. Do not trigger duplicate analysis by default.
 
 The separate `astra_advisor` and `astra_advisor_xhigh` roles for a Luna primary are not owned by this plugin and should not be triggered simultaneously with this plugin's workflow. UI/UX work can use installed design/browser skills, but the plugin does not install or vendor third-party skills.
 
