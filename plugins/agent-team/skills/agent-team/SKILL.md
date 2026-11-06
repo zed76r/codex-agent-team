@@ -1,11 +1,11 @@
 ---
 name: agent-team
-description: Coordinate bounded parallel work under a gpt-6-sol or gpt-6-astra primary using Terra workers, an Astra UI/UX designer, and an optional Astra critic. Use for multi-agent task allocation, independent decision review, or delegating visual and interaction design execution. Includes setup and verification of the named Codex roles. Other primary models do not automatically adopt this team.
+description: Coordinate bounded parallel work under a gpt-6-sol, gpt-6.1-sol, or gpt-6-astra primary using Terra workers, an Astra UI/UX designer, and an optional Astra critic. Use for multi-agent task allocation, independent decision review, or delegating visual and interaction design execution. Includes setup and verification of the named Codex roles. Other primary models do not automatically adopt this team.
 ---
 
 # Agent Team
 
-The `gpt-6-sol` or `gpt-6-astra` primary owns requirements, architecture, authorization, integration, and final acceptance. This skill governs delegation; it does not change the primary model or require every task to use subagents. It is Codex-specific.
+The `gpt-6-sol`, `gpt-6.1-sol`, or `gpt-6-astra` primary owns requirements, architecture, authorization, integration, and final acceptance. This skill governs delegation; it does not change the primary model or require every task to use subagents. It is Codex-specific.
 
 For installation, upgrade, drift, or removal, read [setup](references/setup.md). TOMLs in the plugin's [roles directory](../../roles) are the source of truth. Plugin installation alone does not register them. If a role is unavailable, report that limitation and continue work the primary can safely complete; do not silently substitute a model or install roles during an unrelated task.
 
@@ -26,7 +26,7 @@ Once the primary understands the question and can define independent work, deleg
 
 For a long-running CI or non-production rollout, route bounded status observation to `luna_monitor` when it can proceed independently. Give the exact pipeline or deployment target, expected ref, polling interval, deadline, and terminal conditions. For a single CI pipeline, a background `pipeline-wait` may be simpler. The monitor reports evidence and changes in state; the primary decides whether to proceed, investigate, or accept the result. Actual deployment and remediation stay with the primary under the user's authorization.
 
-The `gpt-6-sol` or `gpt-6-astra` primary must formulate the overall plan, compare approaches, set scope, decompose tasks, and order implementation. During planning, the worker may investigate explicit factual questions and return evidence and unknowns only; do not delegate plan drafting or design recommendations, even as a draft for primary review. If the work needs planning judgment, keep it with the primary rather than relabeling it as exploration. Independent review by the critic does not replace this ownership.
+The `gpt-6-sol`, `gpt-6.1-sol`, or `gpt-6-astra` primary must formulate the overall plan, compare approaches, set scope, decompose tasks, and order implementation. During planning, the worker may investigate explicit factual questions and return evidence and unknowns only; do not delegate plan drafting or design recommendations, even as a draft for primary review. If the work needs planning judgment, keep it with the primary rather than relabeling it as exploration. Independent review by the critic does not replace this ownership.
 
 The named roles fix their own model and effort; spawn overrides do not change those settings. Confirm the role is exposed before dispatch; after launch, verify its actual role and effective model/effort from runtime metadata, not `task_name`. If these cannot be verified, do not rely on that child for independent review. Only the primary schedules agents. Children must not spawn further agents. The separate Luna-primary `astra_advisor` workflow is outside this team and should not be triggered simultaneously with this workflow.
 
