@@ -1,6 +1,6 @@
 {
   "name": "agent-team",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Codex coordination for a gpt-6-sol, gpt-6.1-sol, or gpt-6-astra primary with gpt-6.1-terra workers, an Astra critic, and an Astra UI/UX designer.",
   "author": {
     "name": "Codex Plugins Maintainers"

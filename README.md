@@ -16,6 +16,12 @@ The primary retains planning judgment and may review directly. Terra workers may
 
 For delegated independent code, plan, or architecture review, explicitly select `astra_critic`; keep UI/UX review with `uiux_designer`. Route by the required judgment, not the task name. Independent review remains optional, with at most one critic pass by default per task. If the review role is unavailable or unverified, the primary reviews directly instead of using a worker, monitor, or generic role.
 
+## Scheduling modes
+
+Ultra keeps native scheduling: the primary decides whether and when to delegate and selects general-agent models/effort where supported. The named worker and monitor are optional; delegated independent review and UI/UX work retain their specialist roles. Other levels, including xhigh, use the existing team defaults within the session's delegation permissions. Authorization boundaries, verification, and final acceptance apply in both modes. See the [skill](plugins/agent-team/skills/agent-team/SKILL.md) for mode precedence.
+
+For native general-agent selection or inheritance, leave `[agents].default_subagent_model` and `default_subagent_reasoning_effort` unset in your Codex configuration and any shared configuration source. The named roles keep their fixed model/effort settings. The plugin does not edit those global settings.
+
 ## Install
 
 Requires a Codex client supporting plugins and named TOML agents, access to the configured models, and Python 3.11+ on macOS/Linux for role management.

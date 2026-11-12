@@ -9,6 +9,14 @@ The `gpt-6-sol`, `gpt-6.1-sol`, or `gpt-6-astra` primary owns requirements, arch
 
 For installation, upgrade, drift, or removal, read [setup](references/setup.md). TOMLs in the plugin's [roles directory](../../roles) are the source of truth. Plugin installation alone does not register them. If a role is unavailable, report that limitation and continue work the primary can safely complete; do not silently substitute a model or install roles during an unrelated task.
 
+## Respect the session scheduling mode
+
+Follow the current session's native delegation instructions first. Determine Ultra from an explicit current-session mode or effort setting supplied by the runtime or user; do not infer it from the model name or the global config. The SessionStart event does not expose a documented effort field. If the mode is unavailable, follow native instructions and apply team defaults only where permitted.
+
+In Ultra, the primary chooses whether and when to delegate, the number of agents, and general-agent model/effort settings where the client permits. General work may use the `default` agent with native selection or inheritance; `worker` and `luna_monitor` are optional specialists. The dispatch requirements and corrective-follow-up/critic-pass counts below are defaults for other levels, including xhigh, and do not constrain Ultra's native scheduling. Named-role duties and fixed model/effort settings, delegated review and UI/UX specialization, authorization boundaries, verification, and final acceptance still apply in both modes.
+
+At other levels, use the team routing and delegation defaults below within the session's permission to delegate. This skill never overrides a runtime restriction on proactive delegation. Select the named `worker` for the Terra/high implementation path rather than relying on a global subagent default.
+
 ## Route by judgment required
 
 | Role | Model / effort | Assign |
