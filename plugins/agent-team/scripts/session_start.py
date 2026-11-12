@@ -25,7 +25,10 @@ def main():
     context = (
         "Agent Team entrypoint (primary agent only): read and follow the installed "
         f"$agent-team skill at {skill} when coordinating suitable independent work. "
-        "The skill owns role selection, handoff, verification and agent cleanup. "
+        "Follow native session delegation instructions first. In Ultra, preserve native "
+        "scheduling and general-agent model/effort selection; the skill supplies optional "
+        "specialists, authorization boundaries, verification and final acceptance. "
+        "At other levels, use team defaults only where delegation is permitted. "
         "Do not force delegation for trivial or tightly coupled work. "
         "Delegation never expands user authorization; preserve local safety and "
         "sensitive-data constraints. If you are a delegated child, do not delegate again. "
