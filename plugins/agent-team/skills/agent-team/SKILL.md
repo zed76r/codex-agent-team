@@ -9,13 +9,13 @@ The `gpt-6-sol`, `gpt-6.1-sol`, or `gpt-6-astra` primary owns requirements, arch
 
 For installation, upgrade, drift, or removal, read [setup](references/setup.md). TOMLs in the plugin's [roles directory](../../roles) are the source of truth. Plugin installation alone does not register them. If a role is unavailable, report that limitation and continue work the primary can safely complete; do not silently substitute a model or install roles during an unrelated task.
 
-## Respect the session scheduling mode
+## When to delegate
 
-Follow the current session's native delegation instructions first. Determine Ultra from an explicit current-session mode or effort setting supplied by the runtime or user; do not infer it from the model name or the global config. The SessionStart event does not expose a documented effort field. If the mode is unavailable, follow native instructions and apply team defaults only where permitted.
+This skill explicitly requests subagents for bounded, independent work when delegation would materially improve speed or quality. Local Codex supports delegation requested by the user or applicable `AGENTS.md`/skill instructions; the user does not need to repeat that request for each suitable task. Follow the current session's native instructions and authorization boundaries. See the official [subagent triggering rules](https://learn.chatgpt.com/docs/agent-configuration/subagents#triggering-subagent-workflows).
 
-In Ultra, the primary chooses whether and when to delegate, the number of agents, and general-agent model/effort settings where the client permits. General work may use the `default` agent with native selection or inheritance; `worker` and `luna_monitor` are optional specialists. The dispatch requirements and corrective-follow-up/critic-pass counts below are defaults for other levels, including xhigh, and do not constrain Ultra's native scheduling. Named-role duties and fixed model/effort settings, delegated review and UI/UX specialization, authorization boundaries, verification, and final acceptance still apply in both modes.
+The primary chooses useful work packages, agent count, and timing based on the task, coordination cost, and available roles. Prefer independent exploration, defined checks, and focused review; delegate implementation only with clear ownership and stable contracts. Handle trivial or tightly coupled work directly. Do not complete the same exploration first, duplicate work, or create a package merely to use an agent.
 
-At other levels, use the team routing and delegation defaults below within the session's permission to delegate. This skill never overrides a runtime restriction on proactive delegation. Select the named `worker` for the Terra/high implementation path rather than relying on a global subagent default.
+Use the same task-based policy at every reasoning effort. Do not infer delegation permissions from an Ultra label, the model name, global configuration, or undocumented hook fields. The official description of Ultra's proactive delegation in ChatGPT Work is separate from local Codex's request-based triggering. Named roles keep their fixed model/effort; select `worker` for the Terra/high path rather than relying on global subagent defaults.
 
 ## Route by judgment required
 
@@ -30,7 +30,7 @@ The primary may review directly. When delegating independent code, plan, or arch
 
 An interface can be small in code yet require design judgment: route it to `uiux_designer`. The worker may own separate API/data plumbing or mechanical changes within an already accepted design system. Decisions affecting visual hierarchy or interaction behavior stay with the designer. The designer is an executor and may edit its assigned UI files.
 
-Once the primary understands the question and can define independent work, delegate a suitable package while continuing useful independent work. Do not complete the same exploration first or fragment a trivial edit to create a delegation. Use multiple workers only when ownership does not overlap and coordination has a clear benefit. Tightly coupled decisions and changes remain with the primary.
+Once the primary understands the question and can define a useful independent package, delegate it while continuing separate work. Use multiple workers only when ownership does not overlap and coordination has a clear benefit.
 
 For a long-running CI or non-production rollout, route bounded status observation to `luna_monitor` when it can proceed independently. Give the exact pipeline or deployment target, expected ref, polling interval, deadline, and terminal conditions. For a single CI pipeline, a background `pipeline-wait` may be simpler. The monitor reports evidence and changes in state; the primary decides whether to proceed, investigate, or accept the result. Actual deployment and remediation stay with the primary under the user's authorization.
 
@@ -44,13 +44,13 @@ Specify the objective, allowed reads/changes, prohibited actions, relevant contr
 
 Pass only necessary safe context and applicable authorization limits. Use a fresh or narrow context when sufficient; never forward secrets, PII, raw production logs, production operations, or destructive operations. Delegation does not expand authorization. Include visual references and existing design constraints for UI work.
 
-Check that the child actually starts. Reuse its thread for a related correction when useful. Allow at most one corrective follow-up for a package; if it still needs a different direction, the primary diagnoses and redesigns or takes over. A missing dependency or ordinary test failure does not automatically require a critic.
+Check that the child actually starts. Reuse its thread for related corrections when useful. If repeated failures show that the assignment needs a different direction, the primary diagnoses and redesigns or takes over. A missing dependency or ordinary test failure does not automatically require a critic.
 
 ## Use independent review selectively
 
 Give `astra_critic` the original question, constraints, competing options, and safe evidence. Label a proposed answer as a hypothesis. Ask for concrete counterexamples or missing evidence, rather than endorsement of the primary's conclusion.
 
-Use at most one critic pass by default per task. Use it for requested or useful independent review, including before execution when a disputed assumption determines the approach or during acceptance when new evidence raises a consequential question. A later pass needs a new substantive question or evidence identified by the primary. Not every implementation needs a critic.
+Use independent review when requested or when it can resolve a consequential question, including before execution when a disputed assumption determines the approach or during acceptance when new evidence raises a material concern. Avoid repeated passes on the same question without new evidence. Not every implementation needs a critic.
 
 The critic advises; the primary decides. No opinion replaces tests, browser acceptance, user design feedback, or current runtime readback.
 
@@ -63,3 +63,5 @@ When review cannot resolve the benefit, the primary defines a baseline, acceptan
 Each child reports its result, files, verification actually performed, failures/retries, and unverified items. The primary independently checks critical changes and evidence, resolves contradictions, and verifies the integrated result. For UI work, obtain rendered/browser evidence where available; compilation alone does not establish visual quality. State when rendering is unavailable.
 
 Complete or interrupt all children before the final answer. Report local changes, installation, commit/push, deployment, and runtime acceptance separately. Internal review does not authorize external writes or deployment.
+
+Read-only roles are constrained by their assignments and no-write instructions. Custom agent files inherit the parent session's permissions; a role cannot create a separate read-only sandbox. Verify effective permissions when isolation matters and check observed actions before accepting a read-only result.

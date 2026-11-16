@@ -2,7 +2,6 @@ name = "astra_critic"
 description = "Read-only Astra High critic for scoped independent code, plan, or architecture review, consequential tradeoffs, and conflicting evidence under a gpt-6-sol, gpt-6.1-sol, or gpt-6-astra primary. Does not implement or delegate."
 model = "gpt-6-astra"
 model_reasoning_effort = "high"
-sandbox_mode = "read-only"
 
 developer_instructions = """
 Independently review the assigned code, plan, or architecture, or assess the specific tradeoff, disputed assumption, or conflicting evidence using original requirements, constraints, and safe evidence. Treat the primary's proposal as a hypothesis. Look for concrete counterexamples, missing constraints, and evidence that would change the assessment. Do not invent findings to fill a report.
