@@ -14,11 +14,13 @@ A standalone Codex plugin for a `gpt-6-sol`, `gpt-6.1-sol`, or `gpt-6-astra` pri
 
 The primary retains planning judgment and may review directly. Terra workers may execute defined checks, collect evidence, diagnose bugs, and self-check assigned implementation; they do not perform independent review or issue review findings, risk assessments, or approval verdicts. Delegation does not expand user authorization, and child agents must not delegate again.
 
-For delegated independent code, plan, or architecture review, explicitly select `astra_critic`; keep UI/UX review with `uiux_designer`. Route by the required judgment, not the task name. Independent review remains optional, with at most one critic pass by default per task. If the review role is unavailable or unverified, the primary reviews directly instead of using a worker, monitor, or generic role.
+For delegated independent code, plan, or architecture review, explicitly select `astra_critic`; keep UI/UX review with `uiux_designer`. Route by the required judgment, not the task name. Independent review remains optional; repeat a review only for a new substantive question or evidence. If the review role is unavailable or unverified, the primary reviews directly instead of using a worker, monitor, or generic role.
 
-## Scheduling modes
+## Delegation policy
 
-Ultra keeps native scheduling: the primary decides whether and when to delegate and selects general-agent models/effort where supported. The named worker and monitor are optional; delegated independent review and UI/UX work retain their specialist roles. Other levels, including xhigh, use the existing team defaults within the session's delegation permissions. Authorization boundaries, verification, and final acceptance apply in both modes. See the [skill](plugins/agent-team/skills/agent-team/SKILL.md) for mode precedence.
+The hook asks supported primaries to read the skill before planning non-trivial work. The skill explicitly requests bounded delegation when independent work would materially improve speed or quality. The primary chooses useful packages, timing, and agent count; trivial or tightly coupled tasks stay with the primary. The same task-based policy applies at every reasoning effort. See the [skill](plugins/agent-team/skills/agent-team/SKILL.md#when-to-delegate).
+
+Official [local Codex triggering rules](https://learn.chatgpt.com/docs/agent-configuration/subagents#triggering-subagent-workflows) allow a direct user request or applicable `AGENTS.md`/skill instructions to request delegation. The Ultra proactive-delegation behavior documented for ChatGPT Work is a separate surface; this plugin does not infer delegation permissions from reasoning effort.
 
 For native general-agent selection or inheritance, leave `[agents].default_subagent_model` and `default_subagent_reasoning_effort` unset in your Codex configuration and any shared configuration source. The named roles keep their fixed model/effort settings. The plugin does not edit those global settings.
 
@@ -52,6 +54,8 @@ Plugin installation and role registration are separate steps. Existing unmanaged
 Review and trust the plugin's hook in Codex `/hooks` (desktop: **Settings > Hooks**), then start a new thread. The `SessionStart` hook injects a short `$agent-team` entrypoint for `gpt-6-sol`, `gpt-6.1-sol`, and `gpt-6-astra`, including after resume, clear, compaction, or fork. Delegation rules remain in the skill; no global `AGENTS.md` entry is required. The hook reads only its event input and emits context; it does not install roles, change permissions, or start agents. Other models, including Luna, receive no entrypoint. You can still invoke `$agent-team` explicitly when hooks are unavailable or disabled.
 
 After launch, verify the actual child role and effective model/effort from runtime metadata; `task_name` alone is not proof. The plugin does not change the primary model or require delegation for every task. The separate Luna-primary `astra_advisor` workflow is outside this plugin; do not trigger it simultaneously with `$agent-team`.
+
+All roles inherit the parent session's permissions. Critic and monitor no-write instructions do not create a separate read-only sandbox; set permissions on the parent and verify observed actions for read-only assignments.
 
 ## Repository contents
 
