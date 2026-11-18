@@ -33,10 +33,13 @@ class SessionStartTests(unittest.TestCase):
 
     def event(self, **overrides):
         return {"hook_event_name": "SessionStart", "source": "startup",
-                "model": "gpt-6.1-sol", **overrides}
+                "model": "gpt-6.2-sol", **overrides}
 
     def test_supported_models_and_lifecycle_sources(self):
-        for model in ["gpt-6-sol", "gpt-6.1-sol", "gpt-6-astra"]:
+        for model in [
+            "gpt-6.2-sol", "gpt-6.2-astra",
+            "gpt-6-sol", "gpt-6.1-sol", "gpt-6-astra",
+        ]:
             for source in ["startup", "resume", "clear", "compact", "fork"]:
                 with self.subTest(model=model, source=source):
                     self.assertIsNotNone(re.fullmatch(self.group["matcher"], source))

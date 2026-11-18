@@ -1,16 +1,16 @@
 # Codex Agent Team
 
-A standalone Codex plugin for a `gpt-6-sol`, `gpt-6.1-sol`, or `gpt-6-astra` primary working with bounded Terra, Luna, and Astra specialists.
+A standalone Codex plugin for a `gpt-6.2-sol` or `gpt-6.2-astra` primary working with bounded Terra, Luna, and Astra specialists.
 
 ## Responsibilities
 
 | Role | Model / effort | Responsibility |
 | --- | --- | --- |
-| Primary | `gpt-6-sol`, `gpt-6.1-sol`, or `gpt-6-astra` | Requirements, architecture, overall plans, approach comparisons, scope, task decomposition, implementation order, integration, and final acceptance. |
+| Primary | `gpt-6.2-sol` or `gpt-6.2-astra` | Requirements, architecture, overall plans, approach comparisons, scope, task decomposition, implementation order, integration, and final acceptance. |
 | `worker` | `gpt-6.1-terra` / `high` | Bounded fact-finding, implementation, and defined checks; no independent review, plan drafting, or design recommendations. |
 | `luna_monitor` | `gpt-6-luna` / `high` | Read-only, bounded monitoring of CI and authorized non-production rollouts; reports state changes and terminal evidence, without independent review, deployment, or remediation. |
-| `uiux_designer` | `gpt-6-astra` / `medium` | Visual and interaction design, UI implementation, and rendered verification. |
-| `astra_critic` | `gpt-6-astra` / `high` | Scoped independent, read-only review of code, plans, architecture, consequential tradeoffs, or disputed assumptions. |
+| `uiux_designer` | `gpt-6.2-astra` / `medium` | Visual and interaction design, UI implementation, and rendered verification. |
+| `astra_critic` | `gpt-6.2-astra` / `high` | Scoped independent, read-only review of code, plans, architecture, consequential tradeoffs, or disputed assumptions. |
 
 The primary retains planning judgment and may review directly. Terra workers may execute defined checks, collect evidence, diagnose bugs, and self-check assigned implementation; they do not perform independent review or issue review findings, risk assessments, or approval verdicts. Delegation does not expand user authorization, and child agents must not delegate again.
 
@@ -51,7 +51,7 @@ python3 "$TEAM_PLUGIN_ROOT/scripts/manage_agents.py" status
 
 Plugin installation and role registration are separate steps. Existing unmanaged roles or edited managed files can block installation; see the [setup guide](plugins/agent-team/skills/agent-team/references/setup.md) for ownership, adoption, recovery, and removal.
 
-Review and trust the plugin's hook in Codex `/hooks` (desktop: **Settings > Hooks**), then start a new thread. The `SessionStart` hook injects a short `$agent-team` entrypoint for `gpt-6-sol`, `gpt-6.1-sol`, and `gpt-6-astra`, including after resume, clear, compaction, or fork. Delegation rules remain in the skill; no global `AGENTS.md` entry is required. The hook reads only its event input and emits context; it does not install roles, change permissions, or start agents. Other models, including Luna, receive no entrypoint. You can still invoke `$agent-team` explicitly when hooks are unavailable or disabled.
+Review and trust the plugin's hook in Codex `/hooks` (desktop: **Settings > Hooks**), then start a new thread. The `SessionStart` hook injects a short `$agent-team` entrypoint for `gpt-6.2-sol` and `gpt-6.2-astra`, as well as `gpt-6-sol`, `gpt-6.1-sol`, and `gpt-6-astra`, including after resume, clear, compaction, or fork. Delegation rules remain in the skill; no global `AGENTS.md` entry is required. The hook reads only its event input and emits context; it does not install roles, change permissions, or start agents. Other models, including Luna, receive no entrypoint. You can still invoke `$agent-team` explicitly when hooks are unavailable or disabled.
 
 After launch, verify the actual child role and effective model/effort from runtime metadata; `task_name` alone is not proof. The plugin does not change the primary model or require delegation for every task. The separate Luna-primary `astra_advisor` workflow is outside this plugin; do not trigger it simultaneously with `$agent-team`.
 

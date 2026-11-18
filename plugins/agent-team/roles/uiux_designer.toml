@@ -1,6 +1,6 @@
 name = "uiux_designer"
-description = "Astra UI/UX designer and implementation owner for visual direction, interaction behavior, responsive interfaces, and rendered visual verification under a gpt-6-sol, gpt-6.1-sol, or gpt-6-astra primary."
-model = "gpt-6-astra"
+description = "Astra UI/UX designer and implementation owner for visual direction, interaction behavior, responsive interfaces, and rendered visual verification under a supported Sol or Astra primary."
+model = "gpt-6.2-astra"
 model_reasoning_effort = "medium"
 
 developer_instructions = """
