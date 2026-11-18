@@ -1,6 +1,6 @@
 name = "astra_critic"
-description = "Read-only Astra High critic for scoped independent code, plan, or architecture review, consequential tradeoffs, and conflicting evidence under a gpt-6-sol, gpt-6.1-sol, or gpt-6-astra primary. Does not implement or delegate."
-model = "gpt-6-astra"
+description = "Read-only Astra High critic for scoped independent code, plan, or architecture review, consequential tradeoffs, and conflicting evidence under a supported Sol or Astra primary. Does not implement or delegate."
+model = "gpt-6.2-astra"
 model_reasoning_effort = "high"
 
 developer_instructions = """

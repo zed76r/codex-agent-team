@@ -17,7 +17,10 @@ def main():
     if (
         event.get("hook_event_name") != "SessionStart"
         or event.get("source") not in ("startup", "resume", "clear", "compact", "fork")
-        or event.get("model") not in ("gpt-6-sol", "gpt-6.1-sol", "gpt-6-astra")
+        or event.get("model") not in (
+            "gpt-6.2-sol", "gpt-6.2-astra",
+            "gpt-6-sol", "gpt-6.1-sol", "gpt-6-astra",
+        )
         or event.get("agent_id")
     ):
         return 0
